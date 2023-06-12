@@ -1,0 +1,32 @@
+proxy:
+  title: Shinyproxy em Produção
+  landing-page: /
+  # template-path: ./templates
+  heartbeat-rate: 10000
+  heartbeat-timeout: 50000
+  bind-address: 0.0.0.0
+  container-wait-time: 60000
+  hide-navbar: false 
+  port: 8080
+  
+  docker:
+    internal-networking: true
+    container-network: matrix
+
+  specs:
+    - id: distshiny
+      display-name: Distribuições de Probabilidade
+      container-cmd: ["R", "-e", "shiny::runApp('/root/app', port = 3838, host = '0.0.0.0')"]
+      container-image: distshiny
+      access-groups: [admins]
+      container-network: "${proxy.docker.container-network}"
+    - id: bloodbanks
+      display-name: Localizando bancos de sangue na Índia
+      container-cmd: ["R", "-e", "shiny::runApp('/root/app', port = 3838, host = '0.0.0.0')"]
+      container-image: bloodbanks
+      access-groups: [admins]
+      container-network: "${proxy.docker.container-network}"
+
+server:
+  forward-headers-strategy: native
+  useForwardHeaders: true
